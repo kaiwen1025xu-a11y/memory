@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>甜蜜记忆翻翻乐 🎴💕</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe6ee 50%, #fef9d7 100%);
+            font-family: 'Comic Sans MS', 'Rounded Mplus 1c', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #5a3e36;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: #ff5e8e;
+            text-shadow: 2px 2px 0px #fff, 4px 4px 0px #ffd1e3;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #8c7268;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 6px 16px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            display: inline-block;
+        }
+
+        .game-container {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 800px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.9);
+            border: 4px solid #fff;
+            border-radius: 25px;
+            padding: 20px;
+            width: 200px;
+            box-shadow: 0 10px 25px rgba(255, 148, 178, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .info-box {
+            background: #fff5f8;
+            border: 2px dashed #ff9eba;
+            border-radius: 18px;
+            padding: 12px;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            color: #a87c8a;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff5e8e;
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, #ff70a6, #ff97b7);
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 6px 15px rgba(255, 112, 166, 0.4);
+            font-family: inherit;
+        }
+
+        .btn-restart:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(255, 112, 166, 0.6);
+        }
+
+        /* 记忆卡牌网格 */
+        .grid {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(255, 148, 178, 0.25);
+            border: 6px solid #fff;
+            display: grid;
+            grid-template-columns: repeat(4, 90px);
+            grid-template-rows: repeat(3, 110px);
+            gap: 15px;
+        }
+
+        .card {
+            width: 90px;
+            height: 110px;
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 16px;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card.matched {
+            transform: rotateY(180deg) scale(0.95);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 3.5px solid #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        /* 卡牌背面（未翻开时） */
+        .card-back {
+            background: linear-gradient(135deg, #ff9eb5, #ff6392);
+            font-size: 28px;
+            color: white;
+        }
+
+        /* 卡牌正面（翻开后照片） */
+        .card-front {
+            background: #fff;
+            transform: rotateY(180deg);
+        }
+
+        .card-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .instructions {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #8c7268;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 10px 20px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>🎴 甜蜜记忆翻翻乐 💕</h1>
+        <div class="subtitle">考考你的记忆力！找出所有成对的贴贴照片✨</div>
+    </div>
+
+    <div class="game-container">
+        <div class="grid" id="grid"></div>
+
+        <div class="sidebar">
+            <div class="info-box">
+                <div class="info-label">⏱️ 尝试次数</div>
+                <div class="info-value" id="moves">0</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">✨ 已成功配对</div>
+                <div class="info-value" id="matches">0 / 6</div>
+            </div>
+            <button class="btn-restart" onclick="initGame()">🔄 重新发牌</button>
+        </div>
+    </div>
+
+    <div class="instructions">
+        💡 <b>玩法小提示：</b>每次点击可以翻开两张卡牌。<br>
+        如果两张照片相同就能成功配对；如果不同，它们会在 1 秒后自动盖上！
+    </div>
+
+    <script>
+        // 完美复用你之前传到云端的 3 张照片，每张复制 4 次构成 12 张牌
+        const IMAGES = ['one.jpg', 'two.jpg', 'three.jpg'];
+        const EMOJI_FALLBACKS = ['👩‍❤️‍👨', '🐱💖', '✨🤪'];
+        
+        let deck = [];
+        let flippedCards = [];
+        let matchedCount = 0;
+        let movesCount = 0;
+        let isLocked = false;
+
+        const gridEl = document.getElementById('grid');
+        const movesEl = document.getElementById('moves');
+        const matchesEl = document.getElementById('matches');
+
+        function initGame() {
+            gridEl.innerHTML = '';
+            flippedCards = [];
+            matchedCount = 0;
+            movesCount = 0;
+            isLocked = false;
+            movesEl.innerText = movesCount;
+            matchesEl.innerText = `${matchedCount} / 6`;
+
+            // 生成 12 张牌 (3类照片 x 4张)
+            deck = [];
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 4; j++) {
+                    deck.push(i);
+                }
+            }
+
+            // 洗牌算法 (Fisher-Yates)
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+
+            // 渲染卡牌
+            deck.forEach((type, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.type = type;
+                card.dataset.index = index;
+
+                card.innerHTML = `
+                    <div class="card-face card-back">❓</div>
+                    <div class="card-face card-front">
+                        <img src="${IMAGES[type]}" alt="photo" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\\\'font-size:36px;\\\'>${EMOJI_FALLBACKS[type]}</span>';">
+                    </div>
+                `;
+
+                card.addEventListener('click', () => flipCard(card));
+                gridEl.appendChild(card);
+            });
+        }
+
+        function flipCard(card) {
+            // 如果处于锁定等待状态、卡牌已经翻开、或者是已经配对的卡牌，则不响应点击
+            if (isLocked || card.classList.contains('flipped') || card.classList.contains('matched')) {
+                return;
+            }
+
+            card.classList.add('flipped');
+            flippedCards.push(card);
+
+            // 当翻开两张牌时进行比对
+            if (flippedCards.length === 2) {
+                movesCount++;
+                movesEl.innerText = movesCount;
+                checkForMatch();
+            }
+        }
+
+        function checkForMatch() {
+            const [card1, card2] = flippedCards;
+            const isMatch = card1.dataset.type === card2.dataset.type;
+
+            if (isMatch) {
+                // 延迟添加匹配样式，让玩家看清翻开的是什么
+                setTimeout(() => {
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    matchedCount++;
+                    matchesEl.innerText = `${matchedCount} / 6`;
+                    flippedCards = [];
+
+                    if (matchedCount === 6) {
+                        setTimeout(() => {
+                            alert(`🎉 太厉害啦！你只用了 ${movesCount} 次就找出了所有甜蜜合照！💕`);
+                        }, 300);
+                    }
+                }, 400);
+            } else {
+                // 如果不匹配，锁定网格 1 秒后自动盖上卡牌
+                isLocked = true;
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    flippedCards = [];
+                    isLocked = false;
+                }, 1000);
+            }
+        }
+
+        initGame();
+    </script>
+</body>
+</html>
